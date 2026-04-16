@@ -20,25 +20,27 @@ async function main(): Promise<void> {
     "read_website",
     {
       description:
-        "Fetch and extract the main readable content from a single webpage. Returns full content when safe, or a compact manifest with chunk information when oversized.",
+        "Safely read a URL without overflowing context. Use this first: it returns full content when small, or a manifest with chunk IDs when content is large.",
       inputSchema: {
-        url: z.string().url().describe("Absolute URL to fetch."),
+        url: z.string().url().describe("Absolute http/https URL to read."),
         mode: z
           .enum(["auto", "full", "summary", "manifest"])
           .optional()
-          .describe("Delivery mode. Defaults to auto."),
+          .describe(
+            "Response mode. auto=full if safe else manifest; full=force full content; manifest=force chunk manifest; summary=manifest with concise summary.",
+          ),
         max_return_tokens: z
           .number()
           .int()
           .positive()
           .optional()
-          .describe("Optional immediate return token budget override."),
+          .describe("Optional token budget for immediate response content."),
         max_chunk_tokens: z
           .number()
           .int()
           .positive()
           .optional()
-          .describe("Optional chunk token budget override."),
+          .describe("Optional token budget per chunk in manifest/chunk mode."),
       },
     },
     async (args) => {
@@ -62,10 +64,14 @@ async function main(): Promise<void> {
   server.registerTool(
     "read_website_chunk",
     {
-      description: "Fetch one chunk from a previously chunked webpage manifest.",
+      description:
+        "Read one chunk from a prior read_website manifest. Use after read_website returns delivery=manifest.",
       inputSchema: {
-        url: z.string().url().describe("Absolute URL for the original page."),
-        chunk_id: z.string().min(1).describe("Chunk ID from read_website manifest output."),
+        url: z.string().url().describe("Same URL used in read_website."),
+        chunk_id: z
+          .string()
+          .min(1)
+          .describe("Chunk ID from read_website (often recommended_chunk_id or a chunks[].id value)."),
       },
     },
     async (args) => {
