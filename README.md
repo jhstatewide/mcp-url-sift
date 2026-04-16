@@ -2,6 +2,19 @@
 
 Budget-safe MCP server for single-URL content extraction with adaptive output.
 
+## Why this exists
+
+Smaller models often benefit from reading live web pages, but blindly fetching a URL is risky because content size is unknown up front.
+
+`mcp-url-sift` provides a safer default:
+
+- enforce a configurable token budget for immediate responses
+- return full content only when it fits the budget
+- return a compact manifest for oversized pages
+- let the agent page through content with `read_website_chunk`
+
+This gives agents web augmentation without accidental context blowups.
+
 ## Scripts
 
 - `npm run dev` - run the TypeScript entrypoint with `tsx`
@@ -31,6 +44,13 @@ Response delivery is adaptive:
 
 - `delivery: "full"` for small pages
 - `delivery: "manifest"` for oversized pages with chunk metadata
+
+Typical flow for constrained models:
+
+1. Call `read_website` in `auto` mode.
+2. If `delivery` is `full`, use returned content directly.
+3. If `delivery` is `manifest`, pick a `chunk_id` (or `recommended_chunk_id`).
+4. Call `read_website_chunk` to retrieve only the needed section.
 
 `read_website_chunk` inputs:
 
