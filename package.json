@@ -4,7 +4,7 @@
   "description": "MCP server for budget-safe single URL content extraction.",
   "private": true,
   "type": "module",
-  "bin": "dist/server.js",
+  "bin": "bin/mcp-url-sift.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
