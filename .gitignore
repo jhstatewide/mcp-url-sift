@@ -1,0 +1,5 @@
+node_modules/
+dist/
+*.log
+mcp-url-sift.config.json
+mcp-url-sift_implementation_handoff.md

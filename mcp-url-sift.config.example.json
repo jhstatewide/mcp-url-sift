@@ -1,0 +1,36 @@
+{
+  "server": {
+    "requestTimeoutMs": 15000,
+    "userAgent": "mcp-url-sift/0.1.0",
+    "maxResponseBytes": 2500000
+  },
+  "defaults": {
+    "mode": "auto",
+    "maxReturnTokens": 1800,
+    "maxChunkTokens": 900,
+    "includeSummaryOnOverflow": true,
+    "includeRecommendedChunk": true
+  },
+  "limits": {
+    "hardMaxReturnTokens": 2500,
+    "hardMaxChunkTokens": 1200
+  },
+  "estimation": {
+    "safetyMarginPercent": 20
+  },
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 3600
+  },
+  "security": {
+    "allowPrivateHosts": false
+  },
+  "perDomain": {
+    "docs.python.org": {
+      "maxReturnTokens": 1200
+    },
+    "wikipedia.org": {
+      "maxReturnTokens": 2400
+    }
+  }
+}
